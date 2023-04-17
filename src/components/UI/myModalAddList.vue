@@ -12,10 +12,10 @@
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a href="">Cancel</a>
+                            <a @click="closeModal">Cancel</a>
                         </div>
                         <div class="btn">
-                            <a href="">+ Create</a>
+                            <a @click="checkInput">+ Create</a>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,30 @@
 <script>
 export default {
     name: 'myModalAddList',
-}
+    methods: {
+        checkInput(e) {
+            const input = document.querySelector('.modal__name').firstElementChild;
+            if (input.value[0] == null || input.value[0] == ' ') {
+                alert('Имя не может быть пустым либо начинаться с пробела');
+                return
+            } else {
+                if (this.$store.state.home.tasksLists.length >= 7) {
+                    alert('Максимальное количество разделов - 7');
+                    return
+                }
+                const name = input.value;
+                const completed = [];
+                const list = [name, completed];
+                this.$store.state.home.tasksLists.push(list);
+                this.$emit('closeModal', e);
+
+            };
+        },
+        closeModal(e) {
+            this.$emit('closeModal', e);
+        }
+    },
+};
 </script>
 
 <style scoped lang="scss">
@@ -41,6 +64,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba($color: #000000, $alpha: 0.7);
+    z-index: 999999;
 
     &__block {
         width: 500px;
@@ -68,7 +92,6 @@ export default {
         font-weight: 500;
         line-height: 24px;
         letter-spacing: 0.5px;
-        color: rgba(28, 27, 31, 0.38);
     }
 
     &__btns {

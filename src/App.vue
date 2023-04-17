@@ -15,9 +15,17 @@
   font-family: 'Roboto';
 }
 
+body {
+  overflow-x: hidden;
+}
+
 li,
 a {
   text-decoration: none;
   list-style: none;
+}
+
+a {
+  cursor: pointer;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal">
+    <div class="modal" v-if="this.$store.state.home.deleteList == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -12,10 +12,10 @@
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a href="">Cancel</a>
+                            <a @click="this.$store.state.home.deleteList = false">Cancel</a>
                         </div>
                         <div class="btn">
-                            <a href="">Delete</a>
+                            <a @click="deleteList">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -27,6 +27,12 @@
 <script>
 export default {
     name: 'myModalDeleteList',
+    methods: {
+        deleteList(e) {
+            this.$emit('deleteList', e);
+            this.$store.state.home.deleteList = false;
+        }
+    },
 }
 </script>
 
@@ -41,6 +47,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba($color: #000000, $alpha: 0.7);
+    z-index: 999999;
 
     &__block {
         width: 310px;

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal">
+    <div class="modal" v-if="this.$store.state.home.renameList == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -12,10 +12,10 @@
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a href="">Cancel</a>
+                            <a @click="this.$store.state.home.renameList = false">Cancel</a>
                         </div>
                         <div class="btn">
-                            <a href="">Rename</a>
+                            <a @click="checkInput">Rename</a>
                         </div>
                     </div>
                 </div>
@@ -27,6 +27,17 @@
 <script>
 export default {
     name: 'myModalRenameList',
+    methods: {
+        checkInput(e) {
+            const input = document.querySelector('input');
+            if (input.value[0] == null || input.value[0] == ' ') {
+                alert('Имя не может быть пустым либо начинаться с пробела');
+            } else {
+                this.$emit('newListName', input.value);
+                this.$store.state.home.renameList = false;
+            }
+        }
+    }
 }
 </script>
 
@@ -41,6 +52,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba($color: #000000, $alpha: 0.7);
+    z-index: 999999;
 
     &__block {
         width: 500px;
@@ -68,7 +80,6 @@ export default {
         font-weight: 500;
         line-height: 24px;
         letter-spacing: 0.5px;
-        color: rgba(28, 27, 31, 0.38);
     }
 
     &__btns {

@@ -1,10 +1,20 @@
 <template>
-    <input placeholder="Search" type="text">
+    <input @input="updateInput" :value="modelValue" placeholder="Search" type="text">
 </template>
 
 <script>
 export default {
     name: 'my-input',
+    props: {
+        modelValue: {
+            type: [String, Number]
+        },
+    },
+    methods: {
+        updateInput(e) {
+            this.$emit('update:modelValue', e.target.value);
+        }
+    },
 }
 </script>
 

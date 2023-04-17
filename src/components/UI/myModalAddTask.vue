@@ -1,5 +1,5 @@
 <template>
-    <div class="modal">
+    <div class="modal" v-if="$store.state.home.visibility == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -12,10 +12,10 @@
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a href="">Cancel</a>
+                            <a @click="$store.state.home.visibility = false">Cancel</a>
                         </div>
                         <div class="btn">
-                            <a href="">+ Add</a>
+                            <a @click="checkInput">+ Add</a>
                         </div>
                     </div>
                 </div>
@@ -27,6 +27,51 @@
 <script>
 export default {
     name: 'myModalAddTask',
+    methods: {
+        checkInput(e) {
+            const input = document.querySelector('input');
+            if (input.value[0] == null || input.value[0] == ' ') {
+                alert('Имя не может быть пустым либо начинаться с пробела');
+                return
+            } else {
+                const nowDate = new Date();
+                let correctMonth = nowDate.getMonth() + 1;
+                if (correctMonth <= 9) {
+                    correctMonth = '0' + correctMonth;
+                };
+
+                const task = {
+                    name: input.value,
+                    text: '',
+                    date: nowDate.getDate() + '-' + correctMonth + '-' + nowDate.getFullYear(),
+                    important: 'yes',
+                    id: input.value,
+                };
+
+
+                for (let elem of document.querySelectorAll('.task-list')) {
+                    for (let i = 0; i < document.querySelectorAll('.task-list').length; i++) {
+                        if (elem.classList.contains('choose')) {
+
+                            if (elem.querySelector('.task-list-text').firstElementChild.textContent == this.$store.state.home.tasksLists[i][0]) {
+
+                                this.$store.state.home.tasksLists[i].push(task);
+
+                                this.$store.state.home.importantTasks.push(task);
+                                this.$store.state.home.visibility = false;
+                                console.log(i);
+                                return
+                            }
+                        }
+                    }
+                }
+                this.$store.state.home.tasks.push(task);
+                this.$store.state.home.importantTasks.push(task);
+                input.value = '';
+                this.$store.state.home.visibility = false;
+            }
+        }
+    },
 }
 </script>
 
@@ -41,6 +86,7 @@ export default {
     width: 100%;
     height: 100%;
     background: rgba($color: #000000, $alpha: 0.7);
+    z-index: 999999;
 
     &__block {
         width: 500px;
@@ -68,7 +114,6 @@ export default {
         font-weight: 500;
         line-height: 24px;
         letter-spacing: 0.5px;
-        color: rgba(28, 27, 31, 0.38);
     }
 
     &__btns {

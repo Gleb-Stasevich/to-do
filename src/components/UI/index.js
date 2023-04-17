@@ -5,5 +5,7 @@ import myModalAddList from '@/components/UI/myModalAddList.vue';
 import myModalRenameList from '@/components/UI/myModalRenameList.vue';
 import myModalDeleteList from '@/components/UI/myModalDeleteList.vue';
 import myModalDate from '@/components/UI/myModalDate.vue';
+import myInputSetTitle from '@/components/UI/myInputSetTitle.vue';
+import myTextArea from '@/components/UI/myTextArea.vue';
 
-export default [myInput, myCheckbox, myModalAddTask, myModalAddList, myModalRenameList, myModalDeleteList, myModalDate];
+export default [myInput, myCheckbox, myModalAddTask, myModalAddList, myModalRenameList, myModalDeleteList, myModalDate, myInputSetTitle, myTextArea];
