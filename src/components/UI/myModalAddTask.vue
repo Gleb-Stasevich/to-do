@@ -29,50 +29,83 @@ export default {
     name: 'myModalAddTask',
     methods: {
         checkInput(e) {
+            let i = 0;
+
             const input = document.querySelector('input');
             if (input.value[0] == null || input.value[0] == ' ') {
                 alert('Имя не может быть пустым либо начинаться с пробела');
                 return
-            } else {
-                const nowDate = new Date();
-                let correctMonth = nowDate.getMonth() + 1;
-                if (correctMonth <= 9) {
-                    correctMonth = '0' + correctMonth;
+            } else if (this.$store.state.home.tasksLists.length > 0 && this.$store.state.home.tasks.length > 0) {
+
+                for (let elem of this.$store.state.home.tasks) {
+
+                    if (elem.name == input.value.trim()) {
+                        alert('Не допускается повторое обьявление имени в этом компоненте');
+                        return
+                    }
+                }
+            } else if (this.$store.state.home.importantTasks.length > 0 && this.$store.state.home.tasksLists.length > 0) {
+                for (let elem of this.$store.state.home.tasksLists?.[i]) {
+                    if (elem?.name == input.value.trim()) {
+                        alert('Не допускается повторое обьявление имени в этом компоненте');
+                        return
+                    }
+                }
+                i++;
+            }
+            else if (this.$store.state.home.tasks.length > 0) {
+                for (let task of this.$store.state.home.tasks) {
+                    if (task.name == input.value.trim()) {
+                        alert('Данное имя уже занято');
+                        return
+                    }
+                }
+            } else if (this.$store.state.home.importantTasks.length > 0) {
+                for (let task of this.$store.state.importantTasks) {
+                    if (task.name == input.value.trim()) {
+                        alert('Данное имя уже занято');
+                        return
+                    };
                 };
+            };
 
-                const task = {
-                    name: input.value,
-                    text: '',
-                    date: nowDate.getDate() + '-' + correctMonth + '-' + nowDate.getFullYear(),
-                    important: 'yes',
-                    id: input.value,
-                };
+            const nowDate = new Date();
+            let correctMonth = nowDate.getMonth() + 1;
+            if (correctMonth <= 9) {
+                correctMonth = '0' + correctMonth;
+            };
+
+            const task = {
+                name: input.value,
+                text: '',
+                date: nowDate.getDate() + '-' + correctMonth + '-' + nowDate.getFullYear(),
+                important: 'yes',
+                id: input.value,
+            };
 
 
-                for (let elem of document.querySelectorAll('.task-list')) {
-                    for (let i = 0; i < document.querySelectorAll('.task-list').length; i++) {
-                        if (elem.classList.contains('choose')) {
+            for (let elem of document.querySelectorAll('.task-list')) {
+                for (let i = 0; i < document.querySelectorAll('.task-list').length; i++) {
+                    if (elem.classList.contains('choose')) {
 
-                            if (elem.querySelector('.task-list-text').firstElementChild.textContent == this.$store.state.home.tasksLists[i][0]) {
+                        if (elem.querySelector('.task-list-text').firstElementChild.textContent == this.$store.state.home.tasksLists[i][0]) {
 
-                                this.$store.state.home.tasksLists[i].push(task);
+                            this.$store.state.home.tasksLists[i].push(task);
 
-                                this.$store.state.home.importantTasks.push(task);
-                                this.$store.state.home.visibility = false;
-                                console.log(i);
-                                return
-                            }
+                            this.$store.state.home.importantTasks.push(task);
+                            this.$store.state.home.visibility = false;
+                            return
                         }
                     }
                 }
-                this.$store.state.home.tasks.push(task);
-                this.$store.state.home.importantTasks.push(task);
-                input.value = '';
-                this.$store.state.home.visibility = false;
             }
+            this.$store.state.home.tasks.push(task);
+            this.$store.state.home.importantTasks.push(task);
+            input.value = '';
+            this.$store.state.home.visibility = false;
         }
-    },
-}
+    }
+};
 </script>
 
 <style scoped lang="scss">

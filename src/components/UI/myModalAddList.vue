@@ -33,11 +33,21 @@ export default {
             if (input.value[0] == null || input.value[0] == ' ') {
                 alert('Имя не может быть пустым либо начинаться с пробела');
                 return
-            } else {
+            }
+            else {
                 if (this.$store.state.home.tasksLists.length >= 7) {
                     alert('Максимальное количество разделов - 7');
                     return
-                }
+                };
+
+                for (let elem of this.$store.state.home.tasksLists) {
+                    if (elem[0] == input.value.trim()) {
+                        alert('Данное имя уже занято');
+                        return
+                    }
+
+                };
+
                 const name = input.value;
                 const completed = [];
                 const list = [name, completed];
