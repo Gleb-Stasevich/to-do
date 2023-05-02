@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" v-if="this.$store.state.home.renameList == true">
+    <div class="modal" v-if="this.renameList == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -7,12 +7,12 @@
                         <span>Rename list</span>
                     </div>
                     <div class="modal__name">
-                        <input placeholder="Rename list" type="text">
+                        <input class="rename" placeholder="Rename list" type="text">
                     </div>
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a @click="this.$store.state.home.renameList = false">Cancel</a>
+                            <a @click="this.setRenameList(false)">Cancel</a>
                         </div>
                         <div class="btn">
                             <a @click="checkInput">Rename</a>
@@ -25,19 +25,31 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
     name: 'myModalRenameList',
     methods: {
+
+        ...mapMutations({
+            setRenameList: 'home/setRenameList'
+        }),
+
         checkInput(e) {
-            const input = document.querySelector('input');
+            const input = document.querySelector('.rename');
             if (input.value[0] == null || input.value[0] == ' ') {
                 alert('Имя не может быть пустым либо начинаться с пробела');
             } else {
                 this.$emit('newListName', input.value);
-                this.$store.state.home.renameList = false;
+                this.setRenameList(false);
             }
         }
-    }
+    },
+    computed: {
+        ...mapState({
+            renameList: state => state.home.renameList,
+        }),
+    },
 }
 </script>
 
@@ -90,24 +102,44 @@ export default {
         align-items: center;
     }
 
-    .btn:first-child>a {
+    .btn>a {
         font-weight: 500;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0.1px;
+        transition: all 0.4s ease;
+    }
+
+    .btn:first-child>a {
         color: #5946D2;
         padding: 10px 12px;
     }
 
     .btn:last-child>a {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        letter-spacing: 0.1px;
         color: #FFFFFF;
         padding: 10px 24px;
         background: #5946D2;
         border-radius: 20px;
+    }
+
+    .btn:first-child>a:hover {
+        color: red;
+        transition: all 0.4s ease;
+    }
+
+    .btn:last-child>a:hover {
+        background: #8E7CE6;
+        transition: all 0.4s ease;
+    }
+}
+
+@media(max-width:550px) {
+    .modal__block {
+        width: 310px;
+    }
+
+    .modal__name input {
+        width: 280px;
     }
 }
 </style>

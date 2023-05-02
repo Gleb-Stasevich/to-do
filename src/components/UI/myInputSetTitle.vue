@@ -1,5 +1,5 @@
 <template>
-    <input placeholder="Task Name" type="text">
+    <input maxlength="26" placeholder="Task Name" type="text">
 </template>
 
 <script>
@@ -15,5 +15,6 @@ input {
     border: none;
     color: rgb(117, 117, 117);
     width: 180px;
+    border-radius: 5px;
 }
 </style>

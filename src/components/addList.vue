@@ -1,17 +1,11 @@
 <template>
-    <a @click="visibility = true" class="add">+ New List</a>
-    <myModalAddList v-if="visibility" @closeModal="visibility = false"></myModalAddList>
+    <a @click="this.$store.state.home.addList = true" class="add">+ New List</a>
 </template>
 
 <script>
 export default {
+};
 
-    data() {
-        return {
-            visibility: false,
-        }
-    },
-}
 </script>
 
 <style>

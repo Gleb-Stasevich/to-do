@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" v-if="this.$store.state.home.deleteList == true">
+    <div class="modal" v-if="this.deleteList == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -12,10 +12,10 @@
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a @click="this.$store.state.home.deleteList = false">Cancel</a>
+                            <a @click="this.setDeleteList(false)">Cancel</a>
                         </div>
                         <div class="btn">
-                            <a @click="deleteList">Delete</a>
+                            <a @click="deleteMyList">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -25,14 +25,26 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex';
+
 export default {
     name: 'myModalDeleteList',
     methods: {
-        deleteList(e) {
+
+        ...mapMutations({
+            setDeleteList: 'home/setDeleteList'
+        }),
+
+        deleteMyList(e) {
             this.$emit('deleteList', e);
-            this.$store.state.home.deleteList = false;
+            this.setDeleteList(false);
         }
     },
+    computed: {
+        ...mapState({
+            deleteList: store => store.home.deleteList,
+        }),
+    }
 }
 </script>
 
@@ -85,24 +97,34 @@ export default {
         align-items: center;
     }
 
-    .btn:first-child>a {
+    .btn>a {
         font-weight: 500;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0.1px;
+        transition: all 0.4s ease;
+    }
+
+    .btn:first-child>a {
         color: #5946D2;
         padding: 10px 12px;
     }
 
     .btn:last-child>a {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        letter-spacing: 0.1px;
         color: #FFFFFF;
         padding: 10px 24px;
         background: #F85977;
         border-radius: 20px;
+    }
+
+    .btn:first-child>a:hover {
+        color: red;
+        transition: all 0.4s ease;
+    }
+
+    .btn:last-child>a:hover {
+        background: #8E7CE6;
+        transition: all 0.4s ease;
     }
 }
 </style>

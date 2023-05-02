@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" v-if="$store.state.home.visibility == true">
+    <div class="modal" v-if="visibility == true">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -7,12 +7,12 @@
                         <span>Add a task</span>
                     </div>
                     <div class="modal__name">
-                        <input placeholder="Add a task" type="text">
+                        <input maxlength="26" placeholder="Add a task" type="text">
                     </div>
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a @click="$store.state.home.visibility = false">Cancel</a>
+                            <a @click="setVisibility(false)">Cancel</a>
                         </div>
                         <div class="btn">
                             <a @click="checkInput">+ Add</a>
@@ -25,27 +25,45 @@
 </template>
 
 <script>
+
+import { mapState, mapMutations } from 'vuex';
+
 export default {
     name: 'myModalAddTask',
+
+    props: {
+        openedTasks: {
+            type: [Array, Object],
+            required: true,
+        },
+    },
+
     methods: {
+
+        ...mapMutations({
+            pushTasks: 'home/pushTasks',
+            pushImportantTasks: 'home/pushImportantTasks',
+            setVisibility: 'home/setVisibility',
+        }),
+
         checkInput(e) {
             let i = 0;
+            const input = document.querySelector('.modal__name').firstElementChild;
 
-            const input = document.querySelector('input');
             if (input.value[0] == null || input.value[0] == ' ') {
                 alert('Имя не может быть пустым либо начинаться с пробела');
                 return
-            } else if (this.$store.state.home.tasksLists.length > 0 && this.$store.state.home.tasks.length > 0) {
+            } else if (this.tasksLists.length > 0 && this.tasks.length > 0) {
 
-                for (let elem of this.$store.state.home.tasks) {
+                for (let elem of this.tasks) {
 
                     if (elem.name == input.value.trim()) {
                         alert('Не допускается повторое обьявление имени в этом компоненте');
                         return
                     }
                 }
-            } else if (this.$store.state.home.importantTasks.length > 0 && this.$store.state.home.tasksLists.length > 0) {
-                for (let elem of this.$store.state.home.tasksLists?.[i]) {
+            } else if (this.importantTasks.length > 0 && this.tasksLists.length > 0) {
+                for (let elem of this.tasksLists?.[i]) {
                     if (elem?.name == input.value.trim()) {
                         alert('Не допускается повторое обьявление имени в этом компоненте');
                         return
@@ -53,15 +71,15 @@ export default {
                 }
                 i++;
             }
-            else if (this.$store.state.home.tasks.length > 0) {
-                for (let task of this.$store.state.home.tasks) {
-                    if (task.name == input.value.trim()) {
+            else if (this.tasks.length > 0) {
+                for (let task of this.tasks) {
+                    if (task?.name == input.value.trim()) {
                         alert('Данное имя уже занято');
                         return
                     }
                 }
-            } else if (this.$store.state.home.importantTasks.length > 0) {
-                for (let task of this.$store.state.importantTasks) {
+            } else if (this.importantTasks.length > 0) {
+                for (let task of this.importantTasks) {
                     if (task.name == input.value.trim()) {
                         alert('Данное имя уже занято');
                         return
@@ -71,40 +89,63 @@ export default {
 
             const nowDate = new Date();
             let correctMonth = nowDate.getMonth() + 1;
+            let correctDay = nowDate.getDate();
+
+            if (String(correctDay).length === 1) {
+                correctDay = '0' + correctDay;
+            };
             if (correctMonth <= 9) {
                 correctMonth = '0' + correctMonth;
             };
 
-            const task = {
+            let task = {
                 name: input.value,
                 text: '',
-                date: nowDate.getDate() + '-' + correctMonth + '-' + nowDate.getFullYear(),
+                date: correctDay + '-' + correctMonth + '-' + nowDate.getFullYear(),
                 important: 'yes',
                 id: input.value,
             };
-
 
             for (let elem of document.querySelectorAll('.task-list')) {
                 for (let i = 0; i < document.querySelectorAll('.task-list').length; i++) {
                     if (elem.classList.contains('choose')) {
 
-                        if (elem.querySelector('.task-list-text').firstElementChild.textContent == this.$store.state.home.tasksLists[i][0]) {
+                        if (elem.querySelector('.task-list-text').firstElementChild.textContent == this.tasksLists[i][0]) {
 
-                            this.$store.state.home.tasksLists[i].push(task);
+                            task.i = i;
 
-                            this.$store.state.home.importantTasks.push(task);
-                            this.$store.state.home.visibility = false;
+                            this.$store.state.home.tasksLists[i].push(task); /** Причина пояснена в модуле  */
+
+                            this.pushImportantTasks(task);
+                            this.setVisibility(false);
+
+                            localStorage.setItem('tasksLists', JSON.stringify(this.tasksLists));
+                            localStorage.setItem('importantTasks', JSON.stringify(this.importantTasks));
                             return
                         }
                     }
                 }
-            }
-            this.$store.state.home.tasks.push(task);
-            this.$store.state.home.importantTasks.push(task);
+            };
+
             input.value = '';
-            this.$store.state.home.visibility = false;
+
+            this.pushTasks(task);
+            this.pushImportantTasks(task);
+            this.setVisibility(false);
+
+            localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            localStorage.setItem('importantTasks', JSON.stringify(this.importantTasks));
         }
-    }
+    },
+    computed: {
+        ...mapState({
+            tasks: state => state.home.tasks,
+            importantTasks: state => state.home.importantTasks,
+            tasksLists: state => state.home.tasksLists,
+            visibility: state => state.home.visibility,
+            showDetails: state => state.home.showDetails,
+        })
+    },
 };
 </script>
 
@@ -157,24 +198,45 @@ export default {
         align-items: center;
     }
 
-    .btn:first-child>a {
+    .btn>a {
         font-weight: 500;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0.1px;
+    }
+
+    .btn:first-child>a {
         color: #5946D2;
         padding: 10px 12px;
+        transition: all 0.4s ease;
     }
 
     .btn:last-child>a {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        letter-spacing: 0.1px;
         color: #FFFFFF;
         padding: 10px 24px;
         background: #5946D2;
         border-radius: 20px;
+        transition: all 0.4s ease;
+    }
+}
+
+.btn:first-child>a:hover {
+    color: red;
+    transition: all 0.4s ease;
+}
+
+.btn:last-child>a:hover {
+    background: #8E7CE6;
+    transition: all 0.4s ease;
+}
+
+@media(max-width:550px) {
+    .modal__block {
+        width: 310px;
+    }
+
+    .modal__name input {
+        width: 280px;
     }
 }
 </style>

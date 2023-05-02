@@ -10,15 +10,17 @@ export default {
 
 <style lang="scss" scoped>
 textarea {
-    margin-top: 20px;
     border: none;
     padding: 0px 15px;
     resize: none;
     display: block;
+    width: 240px;
     padding-bottom: 12px;
+    margin: 20px 20px 5px 0px;
     font-weight: 500;
     line-height: 24px;
     letter-spacing: 0.5px;
     color: #1C1B1F;
+    border-radius: 10px;
 }
 </style>

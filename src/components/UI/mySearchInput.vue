@@ -1,24 +1,31 @@
 <template>
-    <input @input="updateInput" :value="modelValue" placeholder="Search" type="text">
+    <input @input="updateInput" :value="selectedSort" placeholder="Search" type="text">
 </template>
 
 <script>
+
 export default {
     name: 'my-input',
     props: {
-        modelValue: {
+        selectedSort: {
             type: [String, Number]
         },
     },
     methods: {
         updateInput(e) {
-            this.$emit('update:modelValue', e.target.value);
+            this.$emit('update:selectedSort', e.target.value);
         }
     },
 }
 </script>
 
 <style lang="scss" scoped>
+$white: #E6E1E5;
+
+.white-placeholder {
+    color: $white !important;
+}
+
 input {
     width: 240px;
     height: 60px;
@@ -38,5 +45,12 @@ input::placeholder {
     background-image: url('@/../public/img/icon-search.png');
     background-repeat: no-repeat;
     padding-left: 24px;
+}
+
+
+@media(max-width: 980px) {
+    input {
+        display: none;
+    }
 }
 </style>

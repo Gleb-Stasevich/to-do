@@ -7,11 +7,12 @@
                         <div class="start-page__logo">
                             <img src="img/logoPlatform.png" alt="">
                         </div>
+
                         <h1 class="start-page__title">Welcome to<br>
                             Uno To Do!</h1>
                         <span class="start-page__sub-title">Start using the best to-do app, you can<br>
                             create and manage your To Do lists to<br> improve your organization.</span>
-                        <a href="#" class="get-started">Get started</a>
+                        <router-link to="/home" class="get-started">Get started</router-link>
                     </div>
                 </div>
                 <div class="start-page__img">
@@ -130,6 +131,12 @@
 
     .get-started {
         width: 320px;
+    }
+
+    .my-checkbox {
+        display: block;
+        margin-left: 5px;
+
     }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="modal">
+    <div v-if="this.addList == true" class="modal">
         <div class="modal__container">
             <div class="modal__content">
                 <div class="modal__block">
@@ -7,12 +7,12 @@
                         <span>New list</span>
                     </div>
                     <div class="modal__name">
-                        <input placeholder="Enter list title" type="text">
+                        <input maxlength="17" placeholder="Enter list title" type="text">
                     </div>
 
                     <div class="modal__btns">
                         <div class="btn">
-                            <a @click="closeModal">Cancel</a>
+                            <a @click="this.setAddList(false)">Cancel</a>
                         </div>
                         <div class="btn">
                             <a @click="checkInput">+ Create</a>
@@ -25,9 +25,16 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
     name: 'myModalAddList',
     methods: {
+
+        ...mapMutations({
+            setAddList: 'home/setAddList',
+        }),
+
         checkInput(e) {
             const input = document.querySelector('.modal__name').firstElementChild;
             if (input.value[0] == null || input.value[0] == ' ') {
@@ -35,12 +42,12 @@ export default {
                 return
             }
             else {
-                if (this.$store.state.home.tasksLists.length >= 7) {
+                if (this.tasksLists.length >= 7) {
                     alert('Максимальное количество разделов - 7');
                     return
                 };
 
-                for (let elem of this.$store.state.home.tasksLists) {
+                for (let elem of this.tasksLists) {
                     if (elem[0] == input.value.trim()) {
                         alert('Данное имя уже занято');
                         return
@@ -53,12 +60,18 @@ export default {
                 const list = [name, completed];
                 this.$store.state.home.tasksLists.push(list);
                 this.$emit('closeModal', e);
+                this.setAddList(false);
 
             };
         },
-        closeModal(e) {
-            this.$emit('closeModal', e);
-        }
+    },
+    computed: {
+
+        ...mapState({
+            tasksLists: state => state.home.tasksLists,
+            addList: state => state.home.addList,
+        })
+
     },
 };
 </script>
@@ -112,24 +125,44 @@ export default {
         align-items: center;
     }
 
-    .btn:first-child>a {
+    .btn>a {
         font-weight: 500;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0.1px;
+        transition: all 0.4s ease;
+    }
+
+    .btn:first-child>a {
         color: #5946D2;
         padding: 10px 12px;
     }
 
     .btn:last-child>a {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        letter-spacing: 0.1px;
         color: #FFFFFF;
         padding: 10px 24px;
         background: #5946D2;
         border-radius: 20px;
+    }
+
+    .btn:first-child>a:hover {
+        color: red;
+        transition: all 0.4s ease;
+    }
+
+    .btn:last-child>a:hover {
+        background: #8E7CE6;
+        transition: all 0.4s ease;
+    }
+}
+
+@media(max-width:550px) {
+    .modal__block {
+        width: 310px;
+    }
+
+    .modal__name input {
+        width: 280px;
     }
 }
 </style>
